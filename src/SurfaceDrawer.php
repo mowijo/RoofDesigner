@@ -1,10 +1,4 @@
 <?php
-
-
-require_once("src/svgtk/svgtk.php");
-include "src/SurfaceCalculator.php";
-
-
 class SurfaceDrawer 
 {
 	
@@ -57,19 +51,11 @@ class SurfaceDrawer
 		$pagewidth = $doc->baseValueAs($doc->width(), "mm");
 		$pageheight = $doc->baseValueAs($doc->height(), "mm");
 
-		echo "PAGEWIDTH      = ".$pagewidth."\n";
-		echo "PAGEHEIGHT     = ".$pageheight."\n";
-		echo "TRIANGLEWIDTH  = ".$trianglewidth."\n";
-		echo "TRIANGLEHEIGHT = ".$triangleheight."\n";		
-
 		if($triangleheight >= $trianglewidth)
-		{
-
-		
+		{		
 			$a = new Point();
 			$a->setX(($pagewidth - $trianglewidth)/2);
 			$a->setY(($pageheight + $triangleheight)/2);
-			echo "A = ".$a."\n";
 
 			$b = new Point();
 			$b->setX(($pagewidth + $trianglewidth)/2);
@@ -150,86 +136,5 @@ class SurfaceDrawer
 	}
 
 }
-
-
-
-
-$sc = new SurfaceCalculator;
-
-$sc->setHeight(50);
-$sc->setEdges(4);
-$sc->setToplength(0);
-$sc->setBottomlength(30);
-
-/*
-$sc->setHeight(30);
-$sc->setEdges(3);
-$sc->setToplength(0);
-$sc->setBottomlength(90);
-*/
-$parameters = $sc->calculateSurface();
-if($parameters === false)
-{
-	die($sc->errorMessage()."\n");
-}
-
-$sd = new SurfaceDrawer();
-if (! $sd->drawSurface($parameters))
-{	
-	die($sd->errorMessage()."\n");
-}
-else
-{	
-	$x = $sd->asXml();
-	echo $x;
-	file_put_contents("/home/morten/out.svg", $x);
-}
-
-/*
-
-
-
-$svg = new SvgDocument();
-
-$rect = $svg->createRectangle();
-$rect->setX("25mm");
-$rect->setY("25mm");
-$rect->setHeight("20mm");
-$rect->setWidth("30mm");
-$rect->style()->setFillColor("red");
-$svg->addChild($rect);
-
-
-$path = $svg->createPath();
-$point = new Point();
-$point->setUnit("mm");
-
-$point->setX(10);
-$point->setY(10);
-$path->setStart($point);
-
-$point = new Point();
-$point->setUnit("mm");
-$point->setX(0);
-$point->setY(10);
-$path->lineto($point);
-
-$point = new Point();
-$point->setUnit("mm");
-$point->setX(10);
-$point->setY(0);
-$path->lineto($point);
-
-$path->close();
-
-$svg->addChild($path);
-
-
-
-
-echo $svg->asXML();
-
-*/
-
 
 ?>

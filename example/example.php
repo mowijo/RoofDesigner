@@ -1,20 +1,35 @@
-<?
+<?php
 
-include(dirname(__FILE__)."/../src/SurfaceCalculator.php");
-include(dirname(__FILE__)."/../src/SvgCreator.php");
+
+require_once("../src/svgtk/svgtk.php");
+include "../src/SurfaceCalculator.php";
+include "../src/SurfaceDrawer.php";
+
 
 $sc = new SurfaceCalculator;
-$sc->setHeight(5);
-$sc->setEdges(5);
-$sc->setToplength(2);
-$sc->setBottomlength(5);
 
-if(!$sc->isInputSane()) 	die("Input not sane: ".$sc->latestErrorMessage()."\n");
+$sc->setHeight(50);
+$sc->setEdges(4);
+$sc->setToplength(0);
+$sc->setBottomlength(30);
 
-$r = $sc->calculateSurface();
-print_r($r);/*
-$svg = new SvgCreator;
-if (! $svg->generate($r) ) die("Could not generate SVG: ".$svg->latestErrorMessage()."\n");
-$svg->save("out.svg");
-*/
+$parameters = $sc->calculateSurface();
+if($parameters === false)
+{
+	die($sc->errorMessage()."\n");
+}
+
+
+$sd = new SurfaceDrawer();
+if (! $sd->drawSurface($parameters))
+{	
+	die($sd->errorMessage()."\n");
+}
+else
+{	
+	$x = $sd->asXml();
+	echo $x;
+	file_put_contents("../../out.svg", $x);
+}
+
 ?>

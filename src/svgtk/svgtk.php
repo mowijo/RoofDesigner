@@ -9,5 +9,6 @@ require_once("path.php");
 require_once("point.php");
 require_once("rectangle.php");
 require_once("style.php");
+require_once("text.php");
 
 ?>

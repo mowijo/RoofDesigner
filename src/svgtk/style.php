@@ -7,6 +7,7 @@
 	private $strokelinejoin_  = "";
 	private $strokeopacity_ = "";
 	private $textanchor_ = "";
+	private $fontsize_ = "";
 
 	function setStrokeColor($c)
 	{
@@ -43,6 +44,11 @@
 		$this->textanchor_ = $a;
 	}
 
+	function setFontSize($fs)
+	{
+		$this->fontsize_ = $fs;
+	}
+
 	function toString()
 	{
 		//stroke:black; fill:none;
@@ -54,6 +60,7 @@
 		if($this->strokelinejoin_ != "") array_push($a, "stroke-linejoin:".$this->strokelinejoin_);
 		if($this->strokeopacity_ != "") array_push($a, "stroke-opacity:".$this->strokeopacity_);
 		if($this->textanchor_ != "") array_push($a, "text-anchor:".$this->textanchor_);
+		if($this->fontsize_ != "") array_push($a, "font-size:".$this->fontsize_);
 		return implode(";", $a);
 	}
 

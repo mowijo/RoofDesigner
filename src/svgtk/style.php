@@ -6,6 +6,7 @@
 	private $strokelinecap_ = "";
 	private $strokelinejoin_  = "";
 	private $strokeopacity_ = "";
+	private $textanchor_ = "";
 
 	function setStrokeColor($c)
 	{
@@ -37,6 +38,11 @@
 		$this->fillcolor_ = $c;
 	}
 
+	function setTextAnchor($a)
+	{
+		$this->textanchor_ = $a;
+	}
+
 	function toString()
 	{
 		//stroke:black; fill:none;
@@ -47,6 +53,7 @@
 		if($this->strokelinecap_ != "") array_push($a, "stroke-linecap:".$this->strokelinecap_);
 		if($this->strokelinejoin_ != "") array_push($a, "stroke-linejoin:".$this->strokelinejoin_);
 		if($this->strokeopacity_ != "") array_push($a, "stroke-opacity:".$this->strokeopacity_);
+		if($this->textanchor_ != "") array_push($a, "text-anchor:".$this->textanchor_);
 		return implode(";", $a);
 	}
 

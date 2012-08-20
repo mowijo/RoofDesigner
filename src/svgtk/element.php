@@ -14,6 +14,11 @@ abstract class SvgElement
 		$this->style_ = new SvgStyle();
 	}
 
+	function elementContent()
+	{
+		return "";
+	}
+
 	function valueToBaseUnit($v)
 	{
 		if($this->svgdocument_ !== false)
@@ -40,11 +45,11 @@ abstract class SvgElement
 	{
 		$style = $this->style()->toString();
 		if($style != "") $xmlelement["style"] = $style;
-		$this->populateXmlElement($xmlelement);
+		$this->populateXmlElement(&$xmlelement);
 		foreach($this->children_ as $child)
 		{
-			$e = $xmlelement->addChild($child->elementName());
-			$child->createSubTree($e);
+			//$e = $xmlelement->addChild($child->elementName(), "This is a piece of text");
+			//$child->createSubTree(&$e);
 		}
 	}
 

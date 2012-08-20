@@ -99,9 +99,19 @@ class SvgDocument
 			case "rectangle":	
 			case "rect":
 				return $this->createPath();
+			case "text":
+				return $this->createText();
 		}
 		return false;
 	}
+
+	function &createText()
+	{
+		$t = new SvgText();
+		$t->setDocument(&$this);
+		return $t;
+	}
+
 
 	function &createRectangle()
 	{
@@ -127,7 +137,14 @@ class SvgDocument
 		
 		foreach($this->children_ as $child)
 		{
-			$e = $x->addChild($child->elementName());
+			$content = $child->elementContent();
+			if($content != "") {
+				$e = $x->addChild($child->elementName(), $content);
+			}
+			else
+			{
+				$e = $x->addChild($child->elementName());
+			}
 			$child->createSubTree($e);
 		}
 		

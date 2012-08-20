@@ -6,7 +6,7 @@ class SvgDocument
 {
 	var $dpmm_ = 3.54330708662;
 	var $width_;
-	var $height_;
+	var $height_;	
 	
 	var $children_ = array();
 	
@@ -16,6 +16,14 @@ class SvgDocument
 		{
 			$this->setSize("A4");
 		}
+	}
+
+
+	function baseValueAs($value, $unit)
+	{
+		if(strtolower($unit) == "mm") return $value / $this->dpmm_;
+		if(strtolower($unit) == "cm") return $value / ($this->dpmm_ * 10);
+		return $value;
 	}
 
 

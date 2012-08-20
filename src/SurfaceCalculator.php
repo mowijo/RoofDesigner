@@ -16,7 +16,6 @@ class SurfaceCalculator
 		return ($n - 2) * SurfaceCalculator::$pi;
 	}
 
-
 	function circumscribedRadius($n, $sl)
 	{
 		$a = $this->radianAngleInPolygon($n);

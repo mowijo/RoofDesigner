@@ -5,6 +5,17 @@ class SvgPath extends SvgElement
 	private $commands = false;
 	private $doclose = false;
 
+	function __construct()
+	{
+		SvgElement::__construct();
+		$this->style()->setStrokeColor("#000000");
+		$this->style()->setStrokeWidth("0.5mm");
+		$this->style()->setStrokeLineCap("butt");
+		$this->style()->setStrokeLineJoin("miter");
+		$this->style()->setStrokeOpacity(1);
+		$this->style()->setFillColor("none");
+	}
+
 	function elementName()
 	{
 		return "path";
@@ -32,7 +43,7 @@ class SvgPath extends SvgElement
 		if($this->doclose) $s .= " z";
 		$e["d"]= trim($s);
 
-		//$e["style"] = "fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1";
+		
 	}
 
 	function setStart($p)

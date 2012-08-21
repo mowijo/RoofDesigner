@@ -8,12 +8,14 @@ include "../src/SurfaceDrawer.php";
 
 $sc = new SurfaceCalculator;
 
-$sc->setHeight(50);
-$sc->setEdges(4);
-$sc->setToplength(0);
-$sc->setBottomlength(30);
+$sc->setHeight(10);
+$sc->setEdges(3);
+$sc->setToplength(10);
+$sc->setBottomlength(40);
 
 $parameters = $sc->calculateSurface();
+var_dump($parameters);
+
 if($parameters === false)
 {
 	die($sc->errorMessage()."\n");
@@ -28,7 +30,7 @@ if (! $sd->drawSurface($parameters))
 else
 {	
 	$x = $sd->asXml();
-	echo $x;
+	echo "\n\n".$x;
 	file_put_contents("../../out.svg", $x);
 }
 

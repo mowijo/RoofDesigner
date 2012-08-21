@@ -36,9 +36,22 @@ class SvgPath extends SvgElement
 				$s .= " ".$command;
 			}
 
-			$s .= " ".$this->valueToBaseUnit($point->x().$point->unit()) . ",".$this->valueToBaseUnit($point->y().$point->unit());
+			switch($command)
+			{
+				case "L":
+				case "l":
+				case "M":
+				case "m":
+					$s .= " ".$this->valueToBaseUnit($point->x().$point->unit()) . ",".$this->valueToBaseUnit($point->y().$point->unit());
+					break;
+				case "A":	
+				case "a":
+					$s .= $this->createDataForArc($point);	//<<--This is not a point.
+					break;
+			}
 
 		}
+		
 		if($this->doclose) $s .= " z";
 		$e["d"]= trim($s);
 
@@ -55,11 +68,40 @@ class SvgPath extends SvgElement
 	//Relaive => lowercase..
 	function lineTo($p, $relative= "relative")
 	{
-		if($this->commands === false) throw new Exception("You must add a start to a path before you can ad a line.");
+		if($this->commands === false) throw new Exception("You must add a start to a path before you can add a line.");
 		array_push($this->commands, ($relative == "relative" )? "l" : "L");
 		array_push($this->commands, $p);
-
 	}
+
+	function createDataForArc($data)
+	{
+		$s = "";
+		$s .= $data["xradius"].",";
+		$s .= $data["yradius"]." ";
+		$s .= $data["x-axis-rotation"]." ";
+		$s .= $data["large-arc-flag"].",";
+		$s .= $data["sweep-flag"]." ";
+		$p = $data["endpoint"];
+		$s .= $this->valueToBaseUnit($p->x().$p->unit()) . ",".$this->valueToBaseUnit($p->y().$p->unit());
+
+		return $s;
+	}
+
+
+	function arc($xradius, $yradius, $xaxisrotation, $largearcflag, $sweepflag, $p, $relative = "relative")
+	{
+		if($this->commands === false) throw new Exception("You must add a start to a path before you can add an arc.");
+		array_push($this->commands, ($relative == "relative" )? "a" : "A");
+		$data = array();
+		$data["xradius"] = $xradius;
+ 		$data["yradius"] = $yradius;
+		$data["x-axis-rotation"] = $xaxisrotation;
+		$data["large-arc-flag"] = $largearcflag;
+		$data["sweep-flag"] = $sweepflag;
+		$data["endpoint"] = $p;
+ 		array_push($this->commands, $data);
+	}
+
 
 	function close()
 	{

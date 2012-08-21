@@ -41,6 +41,7 @@ class SurfaceDrawer
 		if(! $this->checkParameters($parameters, array("width", "height", "amount"))) return false;
 		
 		$doc = new SvgDocument("A4");
+		SvgStyle::setDefaultFontSize("3mm");
 
 		$w = $parameters["width"];
 		$h = $parameters["height"];
@@ -76,7 +77,6 @@ class SurfaceDrawer
 
 		//Baseline text
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY(($a->y()+2)."mm");
 		$t->setText(sprintf("%.1fmm", $w));
@@ -88,7 +88,6 @@ class SurfaceDrawer
 		$x = ($pagewidth-$w)/2;
 		$y = ($pageheight)/2;
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($x)."mm");
 		$t->setY(($y-3)."mm");
 		$t->setText(sprintf("%.1fmm",$h));
@@ -98,7 +97,6 @@ class SurfaceDrawer
 
 		//Scale
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY(($pageheight/2)."mm");
 		$t->setText("1:1");
@@ -107,7 +105,6 @@ class SurfaceDrawer
 
 		//Number of copies
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY((($pageheight/2)+4)."mm");
 		$t->setText("$amount copies");
@@ -126,6 +123,7 @@ class SurfaceDrawer
 		if(! $this->checkParameters($parameters, array("tl", "bl", "psl", "alpha", "amount"))) return false;
 		
 		$doc = new SvgDocument("A4");
+		SvgStyle::setDefaultFontSize("3mm");
 
 		$psl = $parameters["psl"];
 		$bl = $parameters["bl"];
@@ -167,9 +165,8 @@ class SurfaceDrawer
 
 		//Baseline text
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
-		$t->setY(($a->y()+2)."mm");
+		$t->setY(($a->y()+4)."mm");
 		$t->setText(sprintf("%.1fmm", $bl));
 		$t->style()->setTextAnchor("middle");
 		$doc->addChild($t);
@@ -178,17 +175,15 @@ class SurfaceDrawer
 		$y = $a->y() - sin(deg2rad($alpha)) * ($psl/2);
 		$x = $a->x() +sin(deg2rad(90 - $alpha)) * ($psl/2);
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($x)."mm");
 		$t->setY(($y)."mm");
 		$t->setText(sprintf("%.1fmm", $psl));
-		$t->rotate(-$alpha, ($x-2)."mm", ($y+2)."mm");
+		$t->rotate(-$alpha, ($x)."mm", ($y+2)."mm");
 		$t->style()->setTextAnchor("middle");
 		$doc->addChild($t);
 
 		//Topline text
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY(($c->y()-3)."mm");
 		$t->setText(sprintf("%.1fmm", $tl));
@@ -197,7 +192,6 @@ class SurfaceDrawer
 
 		//Angle
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($a->x()+1)."mm");
 		$t->setY(($a->y()-3)."mm");
 		$t->setText(sprintf("%.1f&#176;	", $alpha));
@@ -206,7 +200,6 @@ class SurfaceDrawer
 
 		//Scale
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY(($pageheight/2)."mm");
 		$t->setText("1:1");
@@ -215,7 +208,6 @@ class SurfaceDrawer
 
 		//Number of copies
 		$t = $doc->createText();
-		$t->style()->setFontSize("3mm");
 		$t->setX(($pagewidth/2)."mm");
 		$t->setY((($pageheight/2)+4)."mm");
 		$t->setText("$amount copies");
@@ -268,7 +260,6 @@ class SurfaceDrawer
 			
 			//Baseline text
 			$t = $doc->createText();
-			$t->style()->setFontSize("3mm");
 			$t->setX(($pagewidth/2)."mm");
 			$t->setY(($a->y()+2)."mm");
  			$t->setText(sprintf("%.1fmm", $bl));
@@ -279,7 +270,6 @@ class SurfaceDrawer
 			$y = $a->y() - sin(deg2rad($alpha)) * ($r/2);
 			$x = $a->x() +sin(deg2rad(90 - $alpha)) * ($r/2);
 			$t = $doc->createText();
-			$t->style()->setFontSize("3mm");
 			$t->setX(($x)."mm");
 			$t->setY(($y)."mm");
  			$t->setText(sprintf("%.1fmm", $r));
@@ -289,7 +279,6 @@ class SurfaceDrawer
 
 			//Angle
 			$t = $doc->createText();
-			$t->style()->setFontSize("3mm");
 			$t->setX(($a->x()+1)."mm");
 			$t->setY(($a->y()-3)."mm");
  			$t->setText(sprintf("%.1f&#176;	", $alpha));
@@ -298,7 +287,6 @@ class SurfaceDrawer
 
 			//Scale
 			$t = $doc->createText();
-			$t->style()->setFontSize("3mm");
 			$t->setX(($pagewidth/2)."mm");
 			$t->setY(($pageheight/2)."mm");
  			$t->setText("1:1");
@@ -307,7 +295,6 @@ class SurfaceDrawer
 
 			//Number of copies
 			$t = $doc->createText();
-			$t->style()->setFontSize("3mm");
 			$t->setX(($pagewidth/2)."mm");
 			$t->setY((($pageheight/2)+4)."mm");
  			$t->setText("$amount copies");

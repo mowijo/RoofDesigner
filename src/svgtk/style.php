@@ -9,6 +9,22 @@
 	private $textanchor_ = "";
 	private $fontsize_ = "";
 
+	static $defaultfontsize_ = "5mm";
+
+
+	function __construct()
+	{
+		$this->fontsize_ = SvgStyle::$defaultfontsize_;
+		echo "I create a font with dfs = ".SvgStyle::$defaultfontsize_."\n"; 
+	}
+
+	static function setDefaultFontSize($dfs)
+	{
+		SvgStyle::$defaultfontsize_ = $dfs;
+echo "I set DFS = dfs = ".SvgStyle::$defaultfontsize_."\n"; 
+		
+	}
+
 	function setStrokeColor($c)
 	{
 		$this->strokecolor_ = $c;
@@ -55,7 +71,7 @@
 		$a = array();
 		if($this->strokecolor_ != "") array_push($a, "stroke:".$this->strokecolor_);
 		if($this->fillcolor_ != "") array_push($a, "fill:".$this->fillcolor_);
-		if($this->strokewidth_ != "") array_push($a, "stroke-width:".$this->fillcolor_);
+		if($this->strokewidth_ != "") array_push($a, "stroke-width:".$this->strokewidth_);
 		if($this->strokelinecap_ != "") array_push($a, "stroke-linecap:".$this->strokelinecap_);
 		if($this->strokelinejoin_ != "") array_push($a, "stroke-linejoin:".$this->strokelinejoin_);
 		if($this->strokeopacity_ != "") array_push($a, "stroke-opacity:".$this->strokeopacity_);

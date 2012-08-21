@@ -11,6 +11,7 @@ class Point
 	{
 		$this->x_m = $x;
 		$this->y_m= $y;
+		$this->unit_m = "mm";
 	}
 	
 	function setX($x) { $this->x_m = $x; }
@@ -21,7 +22,7 @@ class Point
 
 	function __tostring()
 	{
-		return "[".$this->x_m.",".$this->y_m."]";
+		return "[".$this->x_m.$this->unit_m.",".$this->y_m.$this->unit_m."]";
 	}
 
 	function differenceTo($other)

@@ -9,7 +9,7 @@ class SvgPath extends SvgElement
 	{
 		SvgElement::__construct();
 		$this->style()->setStrokeColor("#000000");
-		$this->style()->setStrokeWidth("0.5mm");
+		$this->style()->setStrokeWidth("0.05mm");
 		$this->style()->setStrokeLineCap("butt");
 		$this->style()->setStrokeLineJoin("miter");
 		$this->style()->setStrokeOpacity(1);
@@ -35,9 +35,8 @@ class SvgPath extends SvgElement
 				$lastcommand = $command;
 				$s .= " ".$command;
 			}
-			
 
-			$s .= " ".$point->x()*3.5 . ",".$point->y()*3.5;
+			$s .= " ".$this->valueToBaseUnit($point->x().$point->unit()) . ",".$this->valueToBaseUnit($point->y().$point->unit());
 
 		}
 		if($this->doclose) $s .= " z";

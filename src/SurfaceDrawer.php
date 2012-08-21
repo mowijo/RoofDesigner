@@ -17,6 +17,7 @@ class SurfaceDrawer
 
 		if($parameters["shape"] == "triangle") return $this->drawTriangle($parameters);
 		if($parameters["shape"] == "trapezoid") return $this->drawTrapezoid($parameters);
+		if($parameters["shape"] == "rectangle") return $this->drawRectangle($parameters);
 
 		return true;
 	}
@@ -35,22 +36,91 @@ class SurfaceDrawer
 	}
 
 
-/*
-array(6) {                                                                                                                                              
-  ["alpha"]=>                                                                                                                                           
-  float(73.532384751422)                                                                                                                                
-  ["psl"]=>                                                                                                                                             
-  float(52.915026221292)                                                                                                                                
-  ["bl"]=>                                                                                                                                              
-  int(40)                                                                                                                                               
-  ["tl"]=>                                                                                                                                              
-  int(10)                                                                                                                                               
-  ["shape"]=>                                                                                                                                           
-  string(9) "trapezoid"                                                                                                                                 
-  ["amount"]=>                                                                                                                                          
-  int(3)                                                                                                                                                
-}     
-*/
+	function drawRectangle($parameters)
+	{
+		if(! $this->checkParameters($parameters, array("width", "height", "amount"))) return false;
+		
+		$doc = new SvgDocument("A4");
+
+		$w = $parameters["width"];
+		$h = $parameters["height"];
+		$amount = $parameters["amount"];
+
+		$pagewidth = $doc->baseValueAs($doc->width(), "mm");
+		$pageheight = $doc->baseValueAs($doc->height(), "mm");
+
+		$a = new Point();
+		$a->setX(($pagewidth - $w)/2);
+		$a->setY(($pageheight + $h)/2);
+
+		$b = new Point();
+		$b->setX(($pagewidth + $w)/2);
+		$b->setY($a->y());
+
+		$c = new Point();
+		$c->setX($b->x());
+		$c->setY(($pageheight - $h)/2);
+
+		$d = new Point();
+		$d->setX($a->x());
+		$d->setY($c->y());
+
+		$path = $doc->createPath();
+		$path->setStart($a);
+		$path->lineto($b, false);
+		$path->lineto($c, false);
+		$path->lineto($d, false);
+		$path->close();
+		$doc->addChild($path);
+
+
+		//Baseline text
+		$t = $doc->createText();
+		$t->style()->setFontSize("3mm");
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY(($a->y()+2)."mm");
+		$t->setText(sprintf("%.1fmm", $w));
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+		
+		//Length of side
+
+		$x = ($pagewidth-$w)/2;
+		$y = ($pageheight)/2;
+		$t = $doc->createText();
+		$t->style()->setFontSize("3mm");
+		$t->setX(($x)."mm");
+		$t->setY(($y-3)."mm");
+		$t->setText(sprintf("%.1fmm",$h));
+		$t->rotate(-90, $x."mm", $y."mm");
+		
+		$doc->addChild($t);
+
+		//Scale
+		$t = $doc->createText();
+		$t->style()->setFontSize("3mm");
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY(($pageheight/2)."mm");
+		$t->setText("1:1");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Number of copies
+		$t = $doc->createText();
+		$t->style()->setFontSize("3mm");
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY((($pageheight/2)+4)."mm");
+		$t->setText("$amount copies");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		$this->svgdocument = $doc;
+		return true;
+
+	}
+
+
+
 	function drawTrapezoid($parameters)
 	{
 		if(! $this->checkParameters($parameters, array("tl", "bl", "psl", "alpha", "amount"))) return false;

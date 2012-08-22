@@ -18,6 +18,7 @@ class SurfaceDrawer
 		if($parameters["shape"] == "triangle") return $this->drawTriangle($parameters);
 		if($parameters["shape"] == "trapezoid") return $this->drawTrapezoid($parameters);
 		if($parameters["shape"] == "rectangle") return $this->drawRectangle($parameters);
+		if($parameters["shape"] == "pie") return $this->drawPie($parameters);
 
 		return true;
 	}
@@ -32,6 +33,105 @@ class SurfaceDrawer
 				return false;
 			}
 		}
+		return true;
+	}
+
+
+	function drawPie($parameters)
+	{
+		if(! $this->checkParameters($parameters, array("r", "alpha", "amount"))) return false;
+		
+		$doc = new SvgDocument("A4");
+		SvgStyle::setDefaultFontSize("3mm");
+
+		$r = $parameters["r"];
+		$alpha = $parameters["alpha"];
+		$amount = $parameters["amount"];
+
+		$pagewidth = $doc->baseValueAs($doc->width(), "mm");
+		$pageheight = $doc->baseValueAs($doc->height(), "mm");
+
+
+
+		$dx = sin(deg2rad($alpha)/2)*$r;
+		$dy = sin((3.1415-deg2rad($alpha))/2)*$r;
+
+		if($alpha >= 180) 
+		{
+			$width= 2*$r;
+			$height = $r + $dy;
+		}
+		else
+		{
+			$height = $r;
+			$width = 2*$dx;
+		}
+		
+		$top = new Point();
+		$top->setX( ($pagewidth) /2);
+		$top->setY( ($pageheight - $height) /2);
+
+		$begin = new Point();
+		$begin->setX( $top->x() - $dx);
+		$begin->setY( $top->y() + $dy);
+
+		$end = new Point();
+		$end->setX( $top->x() + $dx);
+		$end->setY( $top->y() + $dy);
+
+		
+		$path = $doc->createPath();
+		$path->style()->setFillColor("#feffad");
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($top);
+		$path->lineTo($begin, "absolute");
+		//$xradius, $yradius, $xaxisrotation, $largearcflag, $sweepflag, $p, $relative = "relative")
+		$rotation = 0;
+		$largearcflag = ($alpha > 180) ? 1 : 0;
+		$sweepflag = 0;
+		$path->arc($r."mm", $r."mm", $rotation, $largearcflag, $sweepflag, $end, "absolute");
+		$path->close();
+		$doc->addChild($path);
+
+
+		//Add the angle marking
+		$t = $doc->createText();
+		$t->setX($top->x()."mm");
+		$t->setY(($top->y()+7)."mm");
+		$t->setText(sprintf("%.1f&#176;", $alpha));
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+	
+//&#176;
+
+		//Scale
+		$t = $doc->createText();
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY(($pageheight/2)."mm");
+		$t->setText("1:1");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Number of copies
+		$t = $doc->createText();
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY((($pageheight/2)+4)."mm");
+		$t->setText("1 copy");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Side length
+		$dx = sin(deg2rad($alpha)/2)*($r/2);
+		$dy = sin((3.1415-deg2rad($alpha))/2)*($r/2);
+		$t = $doc->createText();
+		$t->setX(($top->x()-($dx)-3)."mm");
+		$t->setY(($top->y()+($dy)-3)."mm");
+		$t->setText(sprintf("%.1fmm", $r));
+		$t->rotate(($alpha/2)+270, ($top->x()-($dx))."mm",($top->y()+($dy))."mm");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		$this->svgdocument = $doc;
 		return true;
 	}
 

@@ -42,11 +42,12 @@ class SvgPath extends SvgElement
 				case "l":
 				case "M":
 				case "m":
+					//Check that the point is indeed a point.. TODO
 					$s .= " ".$this->valueToBaseUnit($point->x().$point->unit()) . ",".$this->valueToBaseUnit($point->y().$point->unit());
 					break;
 				case "A":	
 				case "a":
-					$s .= $this->createDataForArc($point);	//<<--This is not a point.
+					$s .= $this->createDataForArc($point);	//<<--This point is not a point but a map of arc data.
 					break;
 			}
 
@@ -60,9 +61,14 @@ class SvgPath extends SvgElement
 
 	function setStart($p)
 	{
+		$this->moveTo($p, "absolute");
+	}
+
+	function moveTo($p, $positioning = "relative")
+	{
 		$this->commands = array();
-		array_push($this->commands, "M");
-		array_push($this->commands, $p);
+		array_push($this->commands, ($positioning == "relative" )? "m" : "M");
+		array_push($this->commands, $p);		
 	}
 
 	//Relaive => lowercase..
@@ -76,16 +82,17 @@ class SvgPath extends SvgElement
 	function createDataForArc($data)
 	{
 		$s = "";
-		$s .= $data["xradius"].",";
-		$s .= $data["yradius"]." ";
+		$s .= $this->valueToBaseUnit($data["xradius"]).",";
+		$s .= $this->valueToBaseUnit($data["yradius"])." ";
 		$s .= $data["x-axis-rotation"]." ";
 		$s .= $data["large-arc-flag"].",";
 		$s .= $data["sweep-flag"]." ";
 		$p = $data["endpoint"];
 		$s .= $this->valueToBaseUnit($p->x().$p->unit()) . ",".$this->valueToBaseUnit($p->y().$p->unit());
-
 		return $s;
 	}
+
+
 
 
 	function arc($xradius, $yradius, $xaxisrotation, $largearcflag, $sweepflag, $p, $relative = "relative")
@@ -101,6 +108,8 @@ class SvgPath extends SvgElement
 		$data["endpoint"] = $p;
  		array_push($this->commands, $data);
 	}
+
+
 
 
 	function close()

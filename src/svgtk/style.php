@@ -9,6 +9,10 @@
 	private $textanchor_ = "";
 	private $fontsize_ = "";
 
+	private $strokedasharray_ = array();
+	private $strokedashoffset_ = 0;
+
+
 	static $defaultfontsize_ = "5mm";
 
 
@@ -65,6 +69,19 @@ echo "I set DFS = dfs = ".SvgStyle::$defaultfontsize_."\n";
 		$this->fontsize_ = $fs;
 	}
 
+//stroke-dasharray:1.772,1.772;stroke-dashoffset:0
+	function setStrokeDashArray($a)
+	{
+		if (! is_array($a)) throw new Exception("A is not an array!");
+		$this->strokedasharray_ = $a;
+	}
+
+	function setStrokeDashOffset($o)
+	{
+		$this->strokedashoffset_ = $o;
+	}
+
+
 	function toString()
 	{
 		//stroke:black; fill:none;
@@ -77,6 +94,12 @@ echo "I set DFS = dfs = ".SvgStyle::$defaultfontsize_."\n";
 		if($this->strokeopacity_ != "") array_push($a, "stroke-opacity:".$this->strokeopacity_);
 		if($this->textanchor_ != "") array_push($a, "text-anchor:".$this->textanchor_);
 		if($this->fontsize_ != "") array_push($a, "font-size:".$this->fontsize_);
+	
+		if	( sizeof($this->strokedasharray_) > 1) 
+		{
+			array_push($a, "stroke-dashoffset:".$this->strokedashoffset_);
+			array_push($a, "stroke-dasharray:".implode(",",$this->strokedasharray_));
+		}
 		return implode(";", $a);
 	}
 

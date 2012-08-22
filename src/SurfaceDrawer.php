@@ -19,8 +19,11 @@ class SurfaceDrawer
 		if($parameters["shape"] == "trapezoid") return $this->drawTrapezoid($parameters);
 		if($parameters["shape"] == "rectangle") return $this->drawRectangle($parameters);
 		if($parameters["shape"] == "pie") return $this->drawPie($parameters);
-
-		return true;
+		if($parameters["shape"] == "rainbow") return $this->drawRainbow($parameters);
+		
+		$lasterrormessage = "I don't know how to draw a '".$parameters["shape"]."'";
+		return false;
+		
 	}
 
 	function checkParameters($given, $needed)
@@ -35,6 +38,162 @@ class SurfaceDrawer
 		}
 		return true;
 	}
+
+
+	function drawRainbow($parameters)
+	{
+		if(! $this->checkParameters($parameters, array("r", "R", "alpha", "amount"))) return false;
+		
+		$doc = new SvgDocument("A4");
+		SvgStyle::setDefaultFontSize("3mm");
+
+		$smallR = $parameters["r"];
+		$bigR = $parameters["R"];
+		$alpha = $parameters["alpha"];
+		$amount = $parameters["amount"];
+
+		$pagewidth = $doc->baseValueAs($doc->width(), "mm");
+		$pageheight = $doc->baseValueAs($doc->height(), "mm");
+
+
+
+		$dx = sin(deg2rad($alpha)/2)*$bigR;
+		$dy = sin((3.1415-deg2rad($alpha))/2)*$bigR;
+
+		if($alpha >= 180) 
+		{
+			$width= 2*$bigR;
+			$height = $bigR + $dy;
+		}
+		else
+		{
+			$height = $bigR;
+			$width = 2*$dx;
+		}
+		
+		$top = new Point();
+		$top->setX( ($pagewidth) /2);
+		$top->setY( ($pageheight - $height) /2);
+
+		$bigRbegin = new Point();
+		$bigRbegin->setX( $top->x() - $dx);
+		$bigRbegin->setY( $top->y() + $dy);
+
+		$bigRend = new Point();
+		$bigRend->setX( $top->x() + $dx);
+		$bigRend->setY( $top->y() + $dy);
+
+		
+		$path = $doc->createPath();
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($bigRbegin);
+		$rotation = 0;
+		$largearcflag = ($alpha > 180) ? 1 : 0;
+		$sweepflag = 0;
+		$path->arc($bigR."mm", $bigR."mm", $rotation, $largearcflag, $sweepflag, $bigRend, "absolute");
+		$doc->addChild($path);
+
+
+		//Draw small arc.
+		$dx = sin(deg2rad($alpha)/2)*$smallR;
+		$dy = sin((3.1415-deg2rad($alpha))/2)*$smallR;
+
+		$smallRbegin = new Point();
+		$smallRbegin->setX( $top->x() - $dx);
+		$smallRbegin->setY( $top->y() + $dy);
+
+		$smallRend = new Point();
+		$smallRend->setX( $top->x() + $dx);
+		$smallRend->setY( $top->y() + $dy);
+
+		$path = $doc->createPath();
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($smallRbegin);
+		$rotation = 0;
+		$largearcflag = ($alpha > 180) ? 1 : 0;
+		$sweepflag = 0;
+		$path->arc($smallR."mm", $smallR."mm", $rotation, $largearcflag, $sweepflag, $smallRend, "absolute");
+		$doc->addChild($path);
+
+		$path = $doc->createPath();
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($smallRend);
+		$path->lineTo($bigRend, "absolute");
+		$doc->addChild($path);
+
+		$path = $doc->createPath();
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($smallRbegin);
+		$path->lineTo($bigRbegin, "absolute");
+		$doc->addChild($path);
+
+
+		//The dashed lines.
+		$path = $doc->createPath();
+		$path->style()->setStrokeDashArray(array(1.772,1.772));
+		$path->style()->setStrokeDashOffset(0);
+		$path->style()->setStrokeWidth("0.1mm");
+		$path->setStart($smallRbegin);
+		$path->lineTo($top, "absolute");
+		$path->lineTo($smallRend, "absolute");
+		$doc->addChild($path);
+
+
+
+
+		//Add the angle marking
+		$t = $doc->createText();
+		$t->setX($top->x()."mm");
+		$t->setY(($top->y()+7)."mm");
+		$t->setText(sprintf("%.1f&#176;", $alpha));
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+	
+
+		//Scale
+		$t = $doc->createText();
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY(($pageheight/2)."mm");
+		$t->setText("1:1");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Number of copies
+		$t = $doc->createText();
+		$t->setX(($pagewidth/2)."mm");
+		$t->setY((($pageheight/2)+4)."mm");
+		$t->setText("1 copy");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Side length
+		$dx = sin(deg2rad($alpha)/2)*($smallR/2);
+		$dy = sin((3.1415-deg2rad($alpha))/2)*($smallR/2);
+		$t = $doc->createText();
+		$t->setX(($top->x()-($dx)-3)."mm");
+		$t->setY(($top->y()+($dy)-3)."mm");
+		$t->setText(sprintf("%.1fmm", $smallR));
+		$t->rotate(($alpha/2)+270, ($top->x()-($dx))."mm",($top->y()+($dy))."mm");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+		//Side length
+		$dx = sin(deg2rad($alpha)/2)*($bigR/2);
+		$dy = sin((3.1415-deg2rad($alpha))/2)*($bigR/2);
+		$t = $doc->createText();
+		$t->setX(($top->x()-($dx)-3)."mm");
+		$t->setY(($top->y()+($dy)-3)."mm");
+		$t->setText(sprintf("%.1fmm", $bigR));
+		$t->rotate(($alpha/2)+270, ($top->x()-($dx))."mm",($top->y()+($dy))."mm");
+		$t->style()->setTextAnchor("middle");
+		$doc->addChild($t);
+
+
+		$this->svgdocument = $doc;
+		return true;
+	}
+
+
 
 
 	function drawPie($parameters)

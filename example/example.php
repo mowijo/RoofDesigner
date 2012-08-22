@@ -8,10 +8,10 @@ include "../src/SurfaceDrawer.php";
 
 $sc = new SurfaceCalculator;
 
-$sc->setHeight(40);
+$sc->setHeight(55);
 $sc->setEdges(1);
-$sc->setToplength(0);
-$sc->setBottomlength(60);
+$sc->setToplength(20);
+$sc->setBottomlength(100);
 
 $parameters = $sc->calculateSurface();
 

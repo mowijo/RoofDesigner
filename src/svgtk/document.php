@@ -108,7 +108,7 @@ class SvgDocument
 	function &createText()
 	{
 		$t = new SvgText();
-		$t->setDocument(&$this);
+		$t->setDocument($this);
 		return $t;
 	}
 
@@ -116,14 +116,14 @@ class SvgDocument
 	function &createRectangle()
 	{
 		$r = new SvgRectangle();
-		$r->setDocument(&$this);
+		$r->setDocument($this);
 		return $r;
 	}
 
 	function &createPath()
 	{
 		$p = new SvgPath();
-		$p->setDocument(&$this);
+		$p->setDocument($this);
 		return $p;
 	}
 

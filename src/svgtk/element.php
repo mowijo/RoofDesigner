@@ -81,11 +81,11 @@ abstract class SvgElement
 
 		if($transformations != "") $xmlelement["transform"] = $transformations;
 
-		$this->populateXmlElement(&$xmlelement);
+		$this->populateXmlElement($xmlelement);
 		foreach($this->children_ as $child)
 		{
 			$e = $xmlelement->addChild($child->elementName(), "This is a piece of text");
-			$child->createSubTree(&$e);
+			$child->createSubTree($e);
 		}
 	}
 
